@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- SqlSession setup for MyBatis Database Layer -->
+	<bean id="mysqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="mysqlDataSource" />
+		<property name="configLocation" value="classpath:/gframework/mybatis/config.xml" />
+		<property name="mapperLocations" value="classpath:/gframework/mybatis/mapper/mysql/*.xml" />
+	</bean>
+	
+	<bean id="mysqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="mysqlSessionFactory" />
+	</bean>	
+
+	<!-- SqlSession setup for Derby Database Layer -->
+	<bean id="derbySessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="derbyDataSource" />
+		<property name="configLocation" value="classpath:/gframework/mybatis/config.xml" />
+		<property name="mapperLocations" value="classpath:/gframework/mybatis/mapper/derby/*.xml" />
+	</bean>
+	
+	<bean id="derbySession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="derbySessionFactory" />
+	</bean>	
+     
+</beans>

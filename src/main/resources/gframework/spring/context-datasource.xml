@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+	
+	<!-- JNDI Datasource, configured in Tomcat server.xml -->
+	<!-- 
+	<bean id="mysqlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+    	<property name="jndiName" value="java:comp/env/jdbc/mysql"/>
+	</bean>
+    -->
+    
+	<!-- Application level pool mysql -->
+	<bean id="mysqlDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${global.mysql.driver}"/>
+        <property name="url" value="${global.mysql.url}" />
+        <property name="username" value="${global.mysql.username}"/>
+        <property name="password" value="${global.mysql.password}"/>
+        
+        <property name="removeAbandoned" value="true"/>
+        <property name="initialSize" value="20"/>
+        <property name="maxActive" value="30"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="validationQuery" value="SELECT 1"/>
+	</bean>    
+     
+	<!-- Application level pool derby -->
+	<bean id="derbyDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${global.derby.driver}"/>
+        <property name="url" value="${global.derby.url}" />
+        <property name="username" value="${global.derby.username}"/>
+        <property name="password" value="${global.derby.password}"/>
+
+        <property name="removeAbandoned" value="true"/>
+        <property name="initialSize" value="20"/>
+        <property name="maxActive" value="30"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="validationQuery" value="VALUES 1"/>
+	</bean>    
+
+	<jdbc:initialize-database data-source="derbyDataSource">
+		<jdbc:script location="classpath:/gframework/db/derby/create.sql" />
+		<jdbc:script location="classpath:/gframework/db/derby/insert.sql" />
+	</jdbc:initialize-database>
+
+</beans>

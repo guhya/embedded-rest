@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="User">
+	
+	<sql id="selectWhere">	
+       	WHERE a.delYn = 'N'
+       	<if test="condition != null and keyword != null">
+       		<if test="condition == 'username'">
+       			AND a.username like '%' || #{keyword} || '%'
+       		</if>        		
+       		<if test="condition == 'firstName'">
+       			AND a.firstName like  '%' || #{keyword} || '%'
+       		</if>        		
+       	</if>
+	</sql>
+	<sql id="selectOrder">	
+       	<if test="sortColumn != null and sortOrder != null">
+       		<if test="sortColumn == 'username'">
+       			<if test="sortOrder == 'ASC'">ORDER BY a.username ASC</if>
+       			<if test="sortOrder == 'DESC'">ORDER BY a.username DESC</if>
+       		</if>        		
+       		<if test="sortColumn == 'firstName'">
+       			<if test="sortOrder == 'ASC'">ORDER BY a.firstName ASC</if>
+       			<if test="sortOrder == 'DESC'">ORDER BY a.firstName DESC</if>
+       		</if>        		
+       	</if>
+       	<if test="sortColumn  == null or sortColumn == ''">
+       		ORDER BY a.seq DESC
+		</if>       	
+	</sql>
+
+    <select id="list" parameterType="hashmap" resultType="hashmap">
+    	SELECT * FROM (
+	        SELECT 
+	        	ROW_NUMBER() OVER () AS rowNum
+	    		, a.seq AS "seq"
+				, a.username AS "username"
+				, a.password AS "password"
+				, a.firstName AS "firstName"
+				, a.lastName AS "lastName"
+				, a.birthday AS "birthday"
+				, a.email AS "email"
+				, a.gender AS "gender"
+				, a.mobileNo AS "mobileNo"
+				, a.address AS "address"
+				, a.country AS "country"
+				, a.regIp AS "regIp"
+				, a.regId AS "regId"
+				, a.regDate AS "regDate"
+				, a.modIp AS "modIp"
+				, a.modId AS "modId"
+				, a.modDate AS "modDate"
+				, a.enabled AS "enabled"
+			FROM tbUser a
+	        <include refid="selectWhere" />
+	        <include refid="selectOrder" />
+        ) AS x WHERE rownum &gt;= #{startRow} AND rownum &lt;= (0 + #{pageSize} + #{startRow})
+    </select>
+    
+	<select id="countList" 	parameterType="hashmap" resultType="int">
+        SELECT COUNT(seq) FROM tbUser a       
+        <include refid="selectWhere" />
+    </select>    
+
+    <insert id="insert" parameterType="hashmap" useGeneratedKeys="true" keyProperty="seq">
+    	INSERT INTO tbUser(
+    		username 
+    		, password 
+    		, firstName 
+    		, lastName
+    		, birthday
+    		, email 
+    		, enabled
+    		, secret 
+    		, regId
+    		, regIp 
+    		, regDate
+    		, delYn
+    	)
+    	VALUES(
+    		#{username}
+    		, #{password}
+    		, #{firstName}
+    		, #{lastName}
+    		, #{birthday}
+    		, #{email}
+    		, 'N'
+    		, #{secret}
+    		, #{regId}
+    		, #{regIp}
+    		, CURRENT_TIMESTAMP
+    		, 'N'
+    	)
+    </insert>
+
+    <update id="update" parameterType="hashmap">
+    	UPDATE tbUser SET 
+    		firstName 	= #{firstName}
+    		, lastName 	= #{lastName}
+    		, email 	= #{email}
+    		, modId 	= #{modId}
+    		, modIp		= #{modIp}
+    		, modDate 	= CURRENT_TIMESTAMP
+    	WHERE username 	= #{username}    		
+    </update>
+    
+    <update id="updatePassword" parameterType="hashmap">
+    	UPDATE tbUser SET 
+    		password 	= #{password}
+    		, modId 	= #{modId}
+    		, modIp		= #{modIp}
+    		, modDate 	= CURRENT_TIMESTAMP
+    	WHERE username 	= #{username}    		
+    </update>
+    
+    <select id="select"	parameterType="hashmap" resultType="hashmap">
+    	SELECT 
+    		a.seq AS "seq"
+			, a.username AS "username"
+			, a.password AS "password"
+			, a.firstName AS "firstName"
+			, a.lastName AS "lastName"
+			, a.birthday AS "birthday"
+			, a.email AS "email"
+			, a.gender AS "gender"
+			, a.mobileNo AS "mobileNo"
+			, a.address AS "address"
+			, a.country AS "country"
+			, a.regIp AS "regIp"
+			, a.regId AS "regId"
+			, a.regDate AS "regDate"
+			, a.modIp AS "modIp"
+			, a.modId AS "modId"
+			, a.modDate AS "modDate"
+			, a.enabled AS "enabled"
+		FROM tbUser a
+    	WHERE a.delYn = 'N' AND a.username = #{username}  		         
+    </select>
+
+    <insert id="insertRole" parameterType="hashmap">
+    	INSERT INTO tbUserRole(
+    		username 
+    		, role
+    		, regId
+    		, regIp 
+    		, regDate
+    		, delYn
+    	)
+    	VALUES(
+    		#{username}
+    		, #{role}
+    		, #{regId}
+    		, #{regIp}
+    		, CURRENT_TIMESTAMP
+    		, 'N'
+    	)    	
+    </insert>
+
+    <select id="listUserRoles" parameterType="hashmap" resultType="string">
+    	SELECT 
+    		role 
+    	FROM tbUserRole
+    	WHERE delYn = 'N'
+    		AND username = #{username}  		         
+    </select>
+
+    <update id="delete" parameterType="hashmap">    	
+		UPDATE tbUser SET 
+    		delYn = 'Y'
+    		, modId = #{modId}
+    		, modIp	= #{modIp}
+    		, modDate = CURRENT_TIMESTAMP
+    	WHERE username = #{username} 
+   	</update>
+    
+    <update id="confirmEmail" parameterType="hashmap">    	
+		UPDATE tbUser SET 
+    		enabled = 'Y'
+    		, secret = ''
+    		, modId = #{modId}
+    		, modIp	= #{modIp}
+    		, modDate = CURRENT_TIMESTAMP
+    	WHERE username = #{username} AND secret = #{secret} 
+   	</update>
+   	
+    <update id="resetPassword" parameterType="hashmap">    	
+		UPDATE tbUser SET 
+    		password = #{password}
+    		, modId = #{modId}
+    		, modIp	= #{modIp}
+    		, modDate = CURRENT_TIMESTAMP
+    	WHERE username = #{username} AND secret = #{secret} 
+   	</update>
+   	
+    <select id="checkSecret" parameterType="hashmap" resultType="int">
+    	SELECT  
+    		COUNT(a.seq)
+		FROM tbUser a
+    	WHERE username = #{username} AND secret = #{secret} 
+    </select>
+    
+    
+    <update id="updateSecret" parameterType="hashmap">
+    	UPDATE tbUser SET 
+    		secret 		= #{secret}
+    		, modId 	= #{modId}
+    		, modIp		= #{modIp}
+    		, modDate 	= CURRENT_TIMESTAMP
+    	WHERE username 	= #{username} 
+    </update>
+    
+   	
+    <select id="checkUsername" parameterType="hashmap" resultType="int">
+    	SELECT  
+    		COUNT(a.seq)
+		FROM tbUser a
+    	WHERE username = #{username} AND a.delYn = 'N'
+    </select>
+</mapper>

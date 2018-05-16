@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:mvc="http://www.springframework.org/schema/mvc"
+        xmlns:oxm="http://www.springframework.org/schema/oxm"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        		http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:component-scan base-package="gframework">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<mvc:annotation-driven>
+		<!-- Resolve custom parameter/arguments in controller -->		
+		<mvc:argument-resolvers>
+			<bean class="gframework.common.request.CustomWebArgumentResolver"/>
+		</mvc:argument-resolvers>
+		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" /> 
+		</mvc:message-converters>		
+	</mvc:annotation-driven>
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+	    <property name="cookieName" value="preferredLanguage"/>
+	    <property name="defaultLocale" value="en" /> 
+	    <property name="cookieMaxAge" value="604800"/>        
+	</bean>
+
+	<!-- 
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+     -->
+	<!-- 
+	- View resolver that delegates to other controllers based on the content type. 
+	- CNVR owns all other resolvers, order doesn't matter. 
+	-->
+	<bean id="cnManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="favorPathExtension" value="false" />
+		<property name="ignoreAcceptHeader" value="true" />
+		<property name="favorParameter" value="true" />
+		<property name="parameterName" value="mediaType" />
+		<property name="useJaf" value="false"/>
+		<property name="defaultContentType" value="text/html" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="html" value="text/html" />
+				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />
+				<entry key="xls" value="application/vnd.ms-excel" />
+			</map>
+		</property>
+	</bean>
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="contentNegotiationManager" ref="cnManager" />
+		<property name="viewResolvers">
+			<list>
+				<bean class="org.springframework.web.servlet.view.XmlViewResolver">
+					<property name="location" value="/WEB-INF/config/gframework/springmvc/spreadsheet-views.xml" />
+				</bean>
+				 
+			    <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="1"
+				    p:viewClass="org.springframework.web.servlet.view.JstlView"
+				    p:prefix="/WEB-INF/jsp/gframework/" p:suffix=".jsp"/>
+
+				<bean class="gframework.common.view.JsonViewResolver" />
+				
+				<bean class="gframework.common.view.MarshallingXMLViewResolver">
+					<constructor-arg ref="marshaller" />
+				</bean>
+				
+			</list>
+		</property>
+	</bean>	
+	<oxm:jaxb2-marshaller id="marshaller" >
+		<oxm:class-to-be-bound name="gframework.user.data.UserVo" />
+		<oxm:class-to-be-bound name="gframework.user.data.UserListVo" />
+	</oxm:jaxb2-marshaller>
+
+    <!-- Tiles configuration -->
+    <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+        <property name="definitions">
+            <list>
+                <value>/WEB-INF/config/gframework/tiles/tiles-definitions.xml</value>
+            </list>
+        </property>
+    </bean>
+
+	<bean id="ewPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/gframework/properties/application-local.properties</value>
+            </list>
+        </property>
+    </bean>
+	
+    <!-- Interceptors, locale, maintenance -->
+    <mvc:interceptors>
+    	<mvc:interceptor>
+    		<mvc:mapping path="/**"/>
+    		<bean id="commonInterceptor" class="gframework.common.interceptor.CommonInterceptor"></bean>
+    	</mvc:interceptor>
+    	<mvc:interceptor>
+    		<mvc:mapping path="/**"/>
+		    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+		        <property name="paramName" value="preferredLanguage" />
+		    </bean>
+    	</mvc:interceptor>
+    </mvc:interceptors>
+	
+</beans>
