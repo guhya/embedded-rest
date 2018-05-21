@@ -4,6 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
-<%@	taglib uri="http://ghy.com" prefix="ew" %>
+<%@	taglib uri="http://guhya.net" prefix="g" %>
 
 <c:redirect url="/manager/user/list.do"/>

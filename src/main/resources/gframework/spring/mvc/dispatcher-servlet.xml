@@ -60,7 +60,7 @@
 		<property name="viewResolvers">
 			<list>
 				<bean class="org.springframework.web.servlet.view.XmlViewResolver">
-					<property name="location" value="/WEB-INF/config/gframework/springmvc/spreadsheet-views.xml" />
+					<property name="location" value="classpath:/gframework/views/spreadsheet-views.xml" />
 				</bean>
 				 
 			    <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="1"
@@ -85,7 +85,7 @@
     <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
         <property name="definitions">
             <list>
-                <value>/WEB-INF/config/gframework/tiles/tiles-definitions.xml</value>
+                <value>classpath:/gframework/views/tiles-definitions.xml</value>
             </list>
         </property>
     </bean>

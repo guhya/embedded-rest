@@ -6,7 +6,7 @@ xmlns:web="http://java.sun.com/xml/ns/javaee"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>gframework</display-name>
   
-  <!-- [FILTER] Encoding  -->
+  <!-- [FILTER] Optional filter for utf-8 encoding  -->
   <filter>
     <filter-name>encodingFilter</filter-name>
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -24,7 +24,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <url-pattern>/*</url-pattern>
   </filter-mapping>
    
-  <!-- [FILTER] Support PUT, DELETE http method -->
+  <!-- [FILTER] Optional filter to support RESTful PUT, DELETE http method -->
   <filter>
     <filter-name>hiddenHttpMethodFilter</filter-name>
     <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
@@ -34,28 +34,36 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <url-pattern>*.do</url-pattern>
   </filter-mapping>
   
+  <!-- Location where spring should search for all its beans (Parent Context)-->
+  <!-- context-param is just a placeholder to store 'application-scoped' variable, this is how spring uses it -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>classpath*:gframework/spring/context-*.xml</param-value>
   </context-param>
+  
+  <!-- Spring basically just need a listener and a front controller to integrate to website -->
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+  
+  <!-- This is the front controller, all HTTP requests begin with *.do will be mapped to and intercepted by this -->
   <servlet>
     <servlet-name>action</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <!-- (Child Context) -->
+ 	<!-- init-param is just a placeholder to store 'servlet-scoped' variable -->
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>/WEB-INF/config/gframework/springmvc/dispatcher-servlet.xml</param-value>
+      <param-value>classpath*:gframework/spring/mvc/dispatcher-servlet.xml</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
-  </servlet>
-  
+  </servlet>  
   <servlet-mapping>
     <servlet-name>action</servlet-name>
     <url-pattern>*.do</url-pattern>
   </servlet-mapping>
   
+  <!-- Default file to be executed when request hit a folder -->
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>index.html</welcome-file>
@@ -67,12 +75,13 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <location>/error/Error404.jsp</location>
   </error-page>
   
+  <!-- If we use JNDI, tomcat will need this -->
   <resource-ref>
 	 <res-ref-name>jdbc/mysql</res-ref-name>
 	 <res-type>javax.sql.DataSource</res-type>
 	 <res-auth>Container</res-auth>
 	 <res-sharing-scope>Shareable</res-sharing-scope>
-	</resource-ref>
+  </resource-ref>
   
 </web-app>
 

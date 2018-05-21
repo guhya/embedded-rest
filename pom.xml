@@ -26,6 +26,8 @@
 		<apache.common.io.version>2.4</apache.common.io.version>
 		<jackson.version>2.6.3</jackson.version>
 		<poi.version>3.9</poi.version>
+
+		<jetty.version>7.6.21.v20160908</jetty.version>
 		
 		<slf4j-log4j.version>1.7.7</slf4j-log4j.version>
 		<log4j.version>1.2.17</log4j.version>
@@ -108,13 +110,15 @@
 		    <version>2.5</version>
         </dependency>
         
+        <!-- We use jsp 2.1 provided by jetty with glassfish implementation
 		<dependency>
 	        <groupId>javax.servlet</groupId>
 	        <artifactId>jsp-api</artifactId>
 	        <version>2.0</version>
 	        <scope>provided</scope>
     	</dependency>        
-
+		 -->
+		 
         <dependency>
 		    <groupId>javax.servlet</groupId>
 		    <artifactId>jstl</artifactId>
@@ -246,6 +250,23 @@
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
+		</dependency>
+		
+		<!-- Embedded Jetty -->
+		<dependency>
+		    <groupId>org.eclipse.jetty</groupId>
+		    <artifactId>jetty-webapp</artifactId>
+		    <version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jsp-2.1</artifactId>
+			<version>7.2.2.v20101205</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jsp-2.1-glassfish</artifactId>
+			<version>2.1.v20100127</version>
 		</dependency>
 		
 	</dependencies>
