@@ -110,15 +110,6 @@
 		    <version>2.5</version>
         </dependency>
         
-        <!-- We use jsp 2.1 provided by jetty with glassfish implementation
-		<dependency>
-	        <groupId>javax.servlet</groupId>
-	        <artifactId>jsp-api</artifactId>
-	        <version>2.0</version>
-	        <scope>provided</scope>
-    	</dependency>        
-		 -->
-		 
         <dependency>
 		    <groupId>javax.servlet</groupId>
 		    <artifactId>jstl</artifactId>
@@ -258,6 +249,13 @@
 		    <artifactId>jetty-webapp</artifactId>
 		    <version>${jetty.version}</version>
 		</dependency>
+		
+		<!-- ================================================== -->
+        <!-- JSP Engine -->
+		<!-- ================================================== -->
+
+    	<!-- Use this for embedded Jetty -->
+    	<!-- Jetty jsp -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-jsp-2.1</artifactId>
@@ -268,6 +266,19 @@
 			<artifactId>jsp-2.1-glassfish</artifactId>
 			<version>2.1.v20100127</version>
 		</dependency>
+    	<!-- Jetty jsp -->
+    	
+        <!-- Use this for normal tomcat container -->
+        <!-- 
+		<dependency>
+	        <groupId>javax.servlet</groupId>
+	        <artifactId>jsp-api</artifactId>
+	        <version>2.0</version>
+	        <scope>provided</scope>
+    	</dependency>
+    	 -->
+    	<!-- Tomcat jsp -->
+    	        
 		
 	</dependencies>
 	
