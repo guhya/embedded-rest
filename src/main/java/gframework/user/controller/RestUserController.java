@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -49,6 +50,13 @@ public class RestUserController {
 	@Resource(name = "userService")
 	private UserService userService;
 
+
+	@RequestMapping(value = "/user/{seq}", method=RequestMethod.GET)
+	public @ResponseBody Map<String, Object> get(ModelMap model, Box paramBox, @PathVariable String seq) throws Exception {
+		
+		paramBox.put("seq", seq);
+		return boxUserService.select(paramBox);
+	}
 
 	@RequestMapping(value = "/rest/user/list.do", method=RequestMethod.GET)
 	public @ResponseBody List<Map<String, String>> list(ModelMap model, UserVo userVo) throws Exception {

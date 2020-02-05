@@ -62,6 +62,22 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <servlet-name>action</servlet-name>
     <url-pattern>*.do</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>api</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <!-- (Child Context) -->
+ 	<!-- init-param is just a placeholder to store 'servlet-scoped' variable -->
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath*:gframework/spring/mvc/dispatcher-servlet-api.xml</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>  
+  <servlet-mapping>
+    <servlet-name>api</servlet-name>
+    <url-pattern>/api/*</url-pattern>
+  </servlet-mapping>
   
   <!-- Default file to be executed when request hit a folder -->
   <welcome-file-list>

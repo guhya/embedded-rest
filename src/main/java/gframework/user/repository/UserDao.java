@@ -35,7 +35,7 @@ import gframework.user.data.UserVo;
 @Repository("userDao")
 public class UserDao{
 	
-	@Resource(name = "mysqlSession")	
+	@Resource(name = "derbySession")	
 	private SqlSession sqlSession;
 	
 	/**
