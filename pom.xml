@@ -23,7 +23,7 @@
 		<org.aspectj-version>1.7.4</org.aspectj-version>
 		
 		<apache.common.version>2.6</apache.common.version>
-		<apache.common.io.version>2.4</apache.common.io.version>
+		<apache.common.io.version>2.7</apache.common.io.version>
 		<jackson.version>2.6.3</jackson.version>
 		<poi.version>3.9</poi.version>
 
